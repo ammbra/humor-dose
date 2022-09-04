@@ -1,0 +1,10 @@
+insert into Joke(content,  category, creationDate, id) values ('', 'fashion', now(), LAST_INSERT_ID());
+insert into Joke(content, category, creationDate, id) values ('', 'animal', now(), LAST_INSERT_ID()+1);
+insert into Joke(content, category, creationDate, id) values ('', 'career', now(), LAST_INSERT_ID()+2);
+insert into Joke(content, category, creationDate, id) values ('', 'celebrity', now(), LAST_INSERT_ID()+3);
+insert into Joke(content, category, creationDate, id) values ('', 'dev', now(), LAST_INSERT_ID()+4);
+insert into Joke(content, category, creationDate, id) values ('', 'food', now(), LAST_INSERT_ID()+5);
+insert into Joke(content, category, creationDate, id) values ('', 'history', now(), LAST_INSERT_ID()+6);
+insert into Joke(content, category, creationDate, id) values ('', 'money', now(), LAST_INSERT_ID()+7);
+insert into Joke(content, category, creationDate, id) values ('', 'movie', now(), LAST_INSERT_ID()+8);
+insert into Joke(content, category, creationDate, id) values ('', 'music', now(), LAST_INSERT_ID()+9);
