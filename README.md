@@ -1,78 +1,35 @@
-# humor-dose Project
+# humor-dose Project Setup
 
-This project uses Quarkus, the Supersonic Subatomic Java Framework.
+### Provision the database with Helm
 
-If you want to learn more about Quarkus, please visit its website: https://quarkus.io/ .
+You can provision your MySQL instance using Helm charts:
 
-## Running the application in dev mode
-
-You can run your application in dev mode that enables live coding using:
-```shell script
-./mvnw compile quarkus:dev
+```shell
+helm repo add bitnami https://charts.bitnami.com/bitnami
+helm install my-release bitnami/mysql
 ```
 
-> **_NOTE:_**  Quarkus now ships with a Dev UI, which is available in dev mode only at http://localhost:8080/q/dev/.
+## Deploy to Kubernetes
 
-## Packaging and running the application
+Please run the command below to deploy to Kubernetes
+````
+mvn clean package -Dquarkus.kubernetes.deploy=true
+````
 
-The application can be packaged using:
-```shell script
-./mvnw package
-```
-It produces the `quarkus-run.jar` file in the `target/quarkus-app/` directory.
-Be aware that it’s not an _über-jar_ as the dependencies are copied into the `target/quarkus-app/lib/` directory.
+Obtain the path to the deployed service:
 
-The application is now runnable using `java -jar target/quarkus-app/quarkus-run.jar`.
+````
+kubectl get service humor-dose -o jsonpath='{.status.loadBalancer.ingress[0].ip}'
+````
 
-If you want to build an _über-jar_, execute the following command:
-```shell script
-./mvnw package -Dquarkus.package.type=uber-jar
-```
+Export URL to the service using:
 
-The application, packaged as an _über-jar_, is now runnable using `java -jar target/*-runner.jar`.
+````
+export URL=http://$( kubectl get service fellowship -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+````
 
-## Creating a native executable
+Run the hey command bellow to determine how the resource usage:
 
-You can create a native executable using: 
-```shell script
-./mvnw package -Pnative
-```
-
-Or, if you don't have GraalVM installed, you can run the native executable build in a container using: 
-```shell script
-./mvnw package -Pnative -Dquarkus.native.container-build=true
-```
-
-You can then execute your native executable with: `./target/humor-dose-1.0.0-SNAPSHOT-runner`
-
-If you want to learn more about building native executables, please consult https://quarkus.io/guides/maven-tooling.
-
-## Related Guides
-
-- SmallRye OpenAPI ([guide](https://quarkus.io/guides/openapi-swaggerui)): Document your REST APIs with OpenAPI - comes with Swagger UI
-- RESTEasy Reactive ([guide](https://quarkus.io/guides/resteasy-reactive)): A JAX-RS implementation utilizing build time processing and Vert.x. This extension is not compatible with the quarkus-resteasy extension, or any of the extensions that depend on it.
-- Hibernate ORM with Panache ([guide](https://quarkus.io/guides/hibernate-orm-panache)): Simplify your persistence code for Hibernate ORM via the active record or the repository pattern
-- SmallRye Health ([guide](https://quarkus.io/guides/microprofile-health)): Monitor service health
-- Funqy HTTP Binding ([guide](https://quarkus.io/guides/funqy-http)): HTTP Binding for Quarkus Funqy framework
-- Kubernetes ([guide](https://quarkus.io/guides/kubernetes)): Generate Kubernetes resources from annotations
-
-## Provided Code
-
-### Funqy HTTP
-
-Start your Funqy functions using HTTP
-
-[Related guide section...](https://quarkus.io/guides/funqy-http#get-query-parameter-mapping)
-
-
-### RESTEasy Reactive
-
-Easily start your Reactive RESTful Web Services
-
-[Related guide section...](https://quarkus.io/guides/getting-started-reactive#reactive-jax-rs-resources)
-
-### SmallRye Health
-
-Monitor your application's health using SmallRye Health
-
-[Related guide section...](https://quarkus.io/guides/smallrye-health)
+````
+hey -n 100 -c 20 $URL/jokes
+````
