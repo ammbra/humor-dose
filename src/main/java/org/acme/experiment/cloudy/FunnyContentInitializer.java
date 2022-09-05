@@ -1,17 +1,15 @@
 package org.acme.experiment.cloudy;
 
 import io.quarkus.arc.profile.UnlessBuildProfile;
-import io.quarkus.panache.common.Parameters;
 import io.quarkus.runtime.Startup;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.util.List;
+import org.jboss.logging.Logger;
 
 @Startup
 @ApplicationScoped
@@ -20,7 +18,7 @@ public class FunnyContentInitializer {
 
 
     @Inject
-    org.jboss.logging.Logger LOGGER;
+    Logger LOGGER;
 
     @RestClient
     JokeService jokeService;
@@ -31,7 +29,7 @@ public class FunnyContentInitializer {
     @PostConstruct
     public void init() {
         LOGGER.debug("Updating the db from external service");
-        List<Joke> jokes = Joke.findAll().list();
+        List<Joke> jokes = Joke.listAll();
         for (Joke joke : jokes) {
             String category = joke.category;
             repository.update(jokeService.getAny(category).value(), category);
