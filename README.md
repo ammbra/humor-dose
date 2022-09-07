@@ -22,6 +22,12 @@ Obtain the path to the deployed service:
 kubectl get service humor-dose -o jsonpath='{.status.loadBalancer.ingress[0].ip}'
 ````
 
+Check the memory and CPU consumption:
+
+````
+kubectl get --raw /apis/metrics.k8s.io/v1beta1/namespaces/joke/pods/
+````
+
 Export URL to the service using:
 
 ````
@@ -32,4 +38,10 @@ Run the hey command bellow to determine how the resource usage:
 
 ````
 hey -n 100 -c 20 $URL/jokes
+````
+
+Check again the memory and CPU consumption:
+
+````
+kubectl get --raw /apis/metrics.k8s.io/v1beta1/namespaces/joke/pods/
 ````
